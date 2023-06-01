@@ -11,6 +11,7 @@ import './index.css';
       </button>
     );
   }
+
   
   class Board extends React.Component {
     constructor(props) {
@@ -40,18 +41,35 @@ import './index.css';
           onClick={() => this.handleClick(i)}/>
       );
     }
+
+    reset() {
+      this.setState({
+        squares: Array(9).fill(null),
+        xIsNext: true,
+        resetButton: false,
+      });
+    };
   
     render() {
       const winner = calculateWinner(this.state.squares);
+
       let status;
-      if (winner) {
-        status = winner + ' a gagné'; 
+      if (this.state.squares === (null)) {
+        status = winner; 
+      } else if (winner) {
+        if( winner.indexOf("nul") !== -1) {
+          status = winner;
+        } else {
+          status = winner + ' a gagné';
+        }
       } else {
         status = 'Prochain joueur : ' + (this.state.xIsNext ? 'X' : 'O');
       }
-  
+
+
       return (
         <div>
+          <h1>Morpion</h1>
           <div className="status">{status}</div>
           <div className="board-row">
             {this.renderSquare(0)}
@@ -68,6 +86,12 @@ import './index.css';
             {this.renderSquare(7)}
             {this.renderSquare(8)}
           </div>
+          <br/>
+          {winner && (
+            <button className="reset" onClick={() => this.reset()}>
+            Rejouer
+          </button>
+          )}
         </div>
       );
     }
@@ -106,7 +130,10 @@ import './index.css';
         return squares[a];
       }
     }
-    return null;
+
+    if (squares.every((square) => square !== (null) )) {
+      return "Match nul";
+    }
   }
   
   // ========================================
